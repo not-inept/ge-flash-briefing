@@ -1,0 +1,15 @@
+[package]
+name = "ge-flash-breifing"
+version = "0.1.0"
+authors = ["not-inept <mason@notinept.me>"]
+
+[dependencies]
+rocket = "*"
+rocket_codegen = "0.3.3"
+diesel = "*"
+serde_json = "*"
+hyper = "*"
+scraper = "*"
+aggregator = { path = "aggregator"}
+
+[workspace]
