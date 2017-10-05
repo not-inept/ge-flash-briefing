@@ -1,0 +1,4 @@
+# Uncomment services and populate with your API keys
+# Then rename file to 'sources.toml'
+# [event_registry]
+# api_key = "<YOUR API KEY>"
