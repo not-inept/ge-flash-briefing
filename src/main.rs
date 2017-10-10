@@ -91,7 +91,7 @@ fn format_alexa(v: Value) -> Result<String, Error> {
         for con in concepts {
             let con_id : String = con["id"].to_string();
             if con_id == ge_id && i < 6 {
-                let uid : String = get_string(res["title"]["eng"].to_string());
+                let uid : String = format!("item_num_{}", i);
                 // yyyy-MM-dd'T'HH:mm:ss'.0Z'
                 let update_date : String = get_string(res["eventDate"].to_string()) + &String::from("T00:00:00.0Z");
                 let main_text : String = get_string(res["summary"]["eng"].to_string());
