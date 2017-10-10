@@ -15,6 +15,7 @@ use hyper::Client;
 use tokio_core::reactor::Core;
 use rocket::http::ContentType;
 use rocket::response::Response;
+use rocket::response::content;
 
 #[macro_use] extern crate serde_derive;
 
@@ -115,12 +116,12 @@ fn build_feed(format:FeedFormat) -> String {
     }
 }
 
-#[get("/feed/<file>", format = "application/json")]
-fn serve_feed(file: String) -> String {
+#[get("/feed/<file>")]
+fn serve_feed(file: String) -> content::Json<String> {
     if file == String::from("alexa.json") {
-        return build_feed(FeedFormat::Alexa);
+        return content::Json(build_feed(FeedFormat::Alexa));
     } else {
-        return String::from("{ 'response': 'Invalid requst.' }");
+        return content::Json(String::from("{ 'response': 'Invalid requst.' }"));
     }
 }
 
