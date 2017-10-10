@@ -71,6 +71,12 @@ fn get_feed() -> Result<Value, Error> {
     Ok(v)
 }
 
+fn get_string(s1: String) -> String {
+    let s2 = s1.trim_left_matches("\"");
+    let s3 : String = String::from(s2.trim_right_matches("\""));
+    return s3;
+}
+
 fn format_alexa(v: Value) -> Result<String, Error> {
     // println!("Got to formatting.");
     // println!("Received: {}", v);
@@ -85,12 +91,12 @@ fn format_alexa(v: Value) -> Result<String, Error> {
         for con in concepts {
             let con_id : String = con["id"].to_string();
             if con_id == ge_id && i < 6 {
-                let uid : String = res["title"]["eng"].to_string();
-                let update_date : String = res["eventDate"].to_string() + &String::from("T00:00:00.0Z");
-                let main_text : String = res["summary"]["eng"].to_string();
+                let uid : String = get_string(res["title"]["eng"].to_string());
+                let update_date : String = get_string(res["eventDate"].to_string()) + &String::from("T00:00:00.0Z");
+                let main_text : String = get_string(res["summary"]["eng"].to_string());
                 let redirection_url : String = String::from("http://eventregistry.org/event/") + &uid;
-                let num_articles : String = res["totalArticleCount"].to_string();
-                let title_text : String = num_articles + &String::from(" articles discuss") + &res["title"]["eng"].to_string();
+                let num_articles : String = get_string(res["totalArticleCount"].to_string());
+                let title_text : String = num_articles + &String::from(" articles discuss") + &get_string(res["title"]["eng"].to_string());
                 let cur_result = AlexaItem {
                     mainText: main_text,
                     titleText: title_text,
