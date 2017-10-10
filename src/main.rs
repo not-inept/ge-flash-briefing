@@ -85,7 +85,7 @@ fn format_alexa(v: Value) -> Result<String, Error> {
         for con in concepts {
             let con_id : String = con["id"].to_string();
             if con_id == ge_id && i < 6 {
-                let uid : String = String::from("");
+                let uid : String = res["title"]["eng"].to_string();
                 let update_date : String = res["eventDate"].to_string() + &String::from("T00:00:00.0Z");
                 let main_text : String = res["summary"]["eng"].to_string();
                 let redirection_url : String = String::from("http://eventregistry.org/event/") + &uid;
