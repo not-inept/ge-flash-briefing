@@ -1,6 +1,5 @@
 [global.tls]
-certs = "/etc/letsencrypt/live/notinept.me-0001/fullchain.pem
-"
+certs = "/etc/letsencrypt/live/notinept.me-0001/fullchain.pem"
 key = "/etc/letsencrypt/live/notinept.me-0001/privkey.pem"
 
 [development]
