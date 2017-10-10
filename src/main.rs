@@ -7,11 +7,14 @@ extern crate config;
 extern crate futures;
 extern crate hyper;
 extern crate tokio_core;
+
 use config::File;
 use std::collections::HashMap;
 use futures::{Future, Stream};
 use hyper::Client;
 use tokio_core::reactor::Core;
+use rocket::http::ContentType;
+use rocket::response::Response;
 
 #[macro_use] extern crate serde_derive;
 
@@ -112,7 +115,7 @@ fn build_feed(format:FeedFormat) -> String {
     }
 }
 
-#[get("/feed/<file>")]
+#[get("/feed/<file>", format = "application/json")]
 fn serve_feed(file: String) -> String {
     if file == String::from("alexa.json") {
         return build_feed(FeedFormat::Alexa);
