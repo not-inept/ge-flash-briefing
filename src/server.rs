@@ -7,12 +7,15 @@ extern crate config;
 extern crate futures;
 extern crate hyper;
 extern crate tokio_core;
+extern crate sentiment;
+extern crate chrono;
 
 // Internal modules
 mod event;
 mod finance;
 mod analyzer;
 
+use chrono::Local;
 use config::File;
 use std::collections::HashMap;
 use futures::{Future, Stream};
@@ -82,6 +85,17 @@ fn get_string(s1: String) -> String {
     return s3;
 }
 
+fn get_sentiment(text : String) -> String {
+    let sent = sentiment::analyze(text);
+    if sent.negative.score > sent.positive.score {
+        return String::from("negative");
+    } else if sent.positive.score > sent.negative.score {
+        return String::from("positive");
+    } else {
+        return String::from("neutral");
+    }
+}
+
 fn format_alexa(v: Value) -> Result<String, Error> {
     // println!("Got to formatting.");
     // println!("Received: {}", v);
@@ -96,13 +110,16 @@ fn format_alexa(v: Value) -> Result<String, Error> {
         for con in concepts {
             let con_id : String = con["id"].to_string();
             if con_id == ge_id && i < 6 {
-                let uid : String = format!("item_num_{}", i);
+                let date = Local::now();
+                let time = date.format("%s");
+                let uid : String = format!("item_num_{}_{}", time, i);
                 // yyyy-MM-dd'T'HH:mm:ss'.0Z'
                 let update_date : String = get_string(res["eventDate"].to_string()) + &String::from("T00:00:00.0Z");
                 let main_text : String = get_string(res["summary"]["eng"].to_string());
+                let sent = get_sentiment(main_text.clone());
                 let redirection_url : String = String::from("http://eventregistry.org/event/") + &uid;
                 let num_articles : String = get_string(res["totalArticleCount"].to_string());
-                let title_text : String = num_articles + &String::from(" articles discuss") + &get_string(res["title"]["eng"].to_string());
+                let title_text : String = num_articles + &String::from(" articles discuss ") + &get_string(res["title"]["eng"].to_string()) + &String::from(". This is perceived as generally ") + &get_string(sent);
                 let cur_result = AlexaItem {
                     mainText: main_text,
                     titleText: title_text,
@@ -142,7 +159,7 @@ fn main() {
     event::fetch();
     finance::fetch();
     analyzer::analyze();
-    
+
     rocket::ignite()
         .mount("/", routes![index, serve_feed])
         .launch();
