@@ -1,12 +1,17 @@
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
 
+// External crates
 extern crate rocket;
-
 extern crate config;
 extern crate futures;
 extern crate hyper;
 extern crate tokio_core;
+
+// Internal modules
+mod event;
+mod finance;
+mod analyzer;
 
 use config::File;
 use std::collections::HashMap;
@@ -134,6 +139,10 @@ fn serve_feed(file: String) -> content::Json<String> {
 
 fn main() {
     // println!("{}", build_feed(FeedFormat::Alexa));
+    event::fetch();
+    finance::fetch();
+    analyzer::analyze();
+    
     rocket::ignite()
         .mount("/", routes![index, serve_feed])
         .launch();
