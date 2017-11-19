@@ -49,7 +49,7 @@ fn index() -> &'static str {
     "Webpage Under Construction!"
 }
 
-fn get_feed() -> Result<Value, Error> {pub 
+fn get_feed() -> Result<Value, Error> { 
 
     let mut settings = config::Config::default();
     settings
@@ -113,6 +113,7 @@ fn format_alexa(v: Value) -> Result<String, Error> {
                 let date = Local::now();
                 let time = date.format("%s");
                 let uid : String = format!("item_num_{}_{}", time, i);
+                let temp_title = format!("GE News as of {}.", date.format("%A %B %e, %Y"));
                 // yyyy-MM-dd'T'HH:mm:ss'.0Z'
                 let update_date : String = get_string(res["eventDate"].to_string()) + &String::from("T00:00:00.0Z");
                 let main_text : String = get_string(res["summary"]["eng"].to_string());
@@ -121,8 +122,8 @@ fn format_alexa(v: Value) -> Result<String, Error> {
                 let num_articles : String = get_string(res["totalArticleCount"].to_string());
                 let title_text : String = num_articles + &String::from(" articles discuss ") + &get_string(res["title"]["eng"].to_string()) + &String::from(". This is perceived as generally ") + &get_string(sent);
                 let cur_result = AlexaItem {
-                    mainText: main_text,
-                    titleText: title_text,
+                    mainText: title_text,
+                    titleText: temp_title,
                     uid: uid,
                     updateDate: update_date,
                     redirectionUrl: redirection_url
@@ -157,7 +158,7 @@ fn serve_feed(file: String) -> content::Json<String> {
 fn main() {
     // println!("{}", build_feed(FeedFormat::Alexa));
     event::fetch();
-    finance::fetch();
+    finance::fetch(String::from("api_key"));
     analyzer::analyze();
 
     rocket::ignite()

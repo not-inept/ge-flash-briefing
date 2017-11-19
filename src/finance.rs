@@ -18,45 +18,45 @@ fn main(){
         .build(&core.handle());
 
 	let uri = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=GE&interval=1min&apikey=KPMZYNOVSB3KWEIJ".parse().unwrap();
+	
 	let work = client.get(uri).and_then(|res| {
 		println!("Response: {}", res.status());
-		res.body().concat2()
+		res.body().concat2().and_then(move |body| {
+			let v: Value = serde_json::from_slice(&body).map_err(|e| {
+				io::Error::new(
+					io::ErrorKind::Other,
+					e
+				)
+			}).unwrap();
+			
+			let series = "Time Series (1min)";
+			let mut time = serde_json::to_string(&v["Meta Data"]["3. Last Refreshed"]).unwrap();
+			time.remove(0);
+			time.pop();
+			println!("{}", time);
+			
+			println!("{}", v[series][time]);
+			Ok(())
+		})
 	
 	});
 	core.run(work).unwrap();
 
-}
-
-pub struct FinanceData {
-	current : f64,
-	low : f64,
-	high : f64,
-	open : f64
-}
-
-pub fn fetch(api_key : String) -> FinanceData {
-	return FinanceData {
-		current : 1,
-		low : 1,
-		high : 1,
-		open : 1
-	}
-}
 
 //api key
 //KPMZYNOVSB3KWEIJ
 //https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=GE&interval=1min&apikey=KPMZYNOVSB3KWEIJ
 
+}
 
 
 
 	//res.body().concat2().and_then(move |body| {
-		//	let v: Value = serde_json::from_slice(&body).map_err(|e| {
-			//	io::Error::new(
-				//	io::ErrorKind::Other,
-					//e
-				//)
-			//}).unwrap();
-		//	println!("current IP address is {}", v["origin"]);
-		//	Ok(())
+
+		//println!("current IP address is {}", v["origin"]);
+		//Ok(())
 		//})
+		
+		
+
+//Ok(())
