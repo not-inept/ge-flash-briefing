@@ -1,4 +1,10 @@
 import React, { Component } from 'react';
+import { Grid } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
+import { PageHeader } from 'react-bootstrap';
+import { ListGroup } from 'react-bootstrap';
+import { ListGroupItem } from 'react-bootstrap';
 import './Headlines.css';
 
 function getCurrentEvents() {
@@ -33,37 +39,65 @@ function getCurrentEvents() {
 
 var events = getCurrentEvents();
 
+const gridInstance = (
+  <Grid>
+    <Row className="show-grid">
+      <Col xs={12} md={8}></Col>
+      <Col xs={6} md={4}></Col>
+    </Row>
+  </Grid>
+);
+
+const pageHeaderInstance = (
+  <PageHeader>Headlines <small>from various news sources</small></PageHeader>
+);
+
+const listgroupInstance = (
+  <ListGroup>
+
+    <ListGroupItem header="Heading 1">Lorem ipsum dolor sit amet, consectetur 
+    adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna 
+    aliqua. Ac odio tempor orci dapibus. Massa ultricies mi quis hendrerit dolor 
+    magna eget. Pulvinar etiam non quam lacus suspendisse faucibus interdum. 
+    Ac odio tempor orci dapibus ultrices in iaculis nunc.</ListGroupItem>
+
+    <ListGroupItem header="Heading 2">Lorem ipsum dolor sit amet, 
+    consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
+    dolore magna aliqua. Ac odio tempor orci dapibus. Massa ultricies mi quis 
+    hendrerit dolor magna eget. Pulvinar etiam non quam lacus suspendisse 
+    faucibus interdum. Ac odio tempor orci dapibus ultrices in iaculis nunc.</ListGroupItem>
+    
+    <ListGroupItem header="Heading 3">Lorem ipsum dolor sit 
+    amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
+    labore et dolore magna aliqua. Ac odio tempor orci dapibus. Massa ultricies 
+    mi quis hendrerit dolor magna eget. Pulvinar etiam non quam lacus 
+    suspendisse faucibus interdum. Ac odio tempor orci dapibus ultrices in 
+    iaculis nunc.</ListGroupItem>
+
+    <ListGroupItem header="Heading 4">Lorem ipsum dolor sit 
+    amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
+    labore et dolore magna aliqua. Ac odio tempor orci dapibus. Massa ultricies 
+    mi quis hendrerit dolor magna eget. Pulvinar etiam non quam lacus 
+    suspendisse faucibus interdum. Ac odio tempor orci dapibus ultrices in 
+    iaculis nunc.</ListGroupItem>
+
+    <ListGroupItem header="Heading 5">Lorem ipsum dolor sit 
+    amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
+    labore et dolore magna aliqua. Ac odio tempor orci dapibus. Massa ultricies 
+    mi quis hendrerit dolor magna eget. Pulvinar etiam non quam lacus 
+    suspendisse faucibus interdum. Ac odio tempor orci dapibus ultrices in 
+    iaculis nunc.</ListGroupItem>
+
+  </ListGroup>
+);
+
 class Headlines extends Component {
   render() {
-    return (
-    	<div className="Headlines">
-      <h2>Headlines</h2>
-      <h3>Headline 1</h3>
-        <ol>
-          <li>{events[0].title}</li>
-          <li>{events[0].summary}</li>
-          <li>{events[0].articleMoods[0].source}</li>
-          <li>{events[0].articleMoods[0].mood}</li>
-          <li>{events[0].date}</li>
-        </ol>
-      <h3>Headline 2</h3>
-        <ol>
-          <li>{events[1].title}</li>
-          <li>{events[1].summary}</li>
-          <li>{events[1].articleMoods[0].source}</li>
-          <li>{events[1].articleMoods[0].mood}</li>
-          <li>{events[1].date}</li>
-        </ol>
-
-      <h3>Headline 2</h3>
-        <ol>
-          <li>{events[2].title}</li>
-          <li>{events[2].summary}</li>
-          <li>{events[2].articleMoods[0].source}</li>
-          <li>{events[2].articleMoods[0].mood}</li>
-          <li>{events[2].date}</li>
-        </ol>
-    	</div>
+    return ( 
+      <div>
+        {pageHeaderInstance}
+        {listgroupInstance}
+      </div>
     );
   }
 }
