@@ -27,6 +27,22 @@ fn main(){
 
 }
 
+pub struct FinanceData {
+	current : f64,
+	low : f64,
+	high : f64,
+	open : f64
+}
+
+pub fn get_finance(api_key : String) -> FinanceData {
+	return FinanceData {
+		current : 1,
+		low : 1,
+		high : 1,
+		open : 1
+	}
+}
+
 //api key
 //KPMZYNOVSB3KWEIJ
 //https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=GE&interval=1min&apikey=KPMZYNOVSB3KWEIJ

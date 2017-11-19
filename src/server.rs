@@ -49,7 +49,7 @@ fn index() -> &'static str {
     "Webpage Under Construction!"
 }
 
-fn get_feed() -> Result<Value, Error> {
+fn get_feed() -> Result<Value, Error> {pub 
 
     let mut settings = config::Config::default();
     settings
