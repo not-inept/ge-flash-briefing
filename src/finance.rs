@@ -10,6 +10,24 @@ use hyper::Client;
 use tokio_core::reactor::Core;
 use serde_json::Value;
 
+pub struct FinanceData {
+	open : f64,
+	close : f64,
+	current : f64,
+	24hr_low : f64,
+	24hr_high : f64
+}
+
+// Fetch financial data in the form of findata struct for storing
+pub fn fetch(api_key : String) -> FinanceData {
+	return FinanceData {
+		open : 1.0,
+		close : 1.0,
+		current : 1.0,
+		24hr_low : 1.0,
+		24hr_high : 1.0		
+	}
+}
 
 fn main(){
 	let mut core = Core::new().unwrap();
