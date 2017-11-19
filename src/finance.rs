@@ -34,7 +34,7 @@ pub struct FinanceData {
 	open : f64
 }
 
-pub fn get_finance(api_key : String) -> FinanceData {
+pub fn fetch(api_key : String) -> FinanceData {
 	return FinanceData {
 		current : 1,
 		low : 1,
