@@ -13,8 +13,8 @@ use serde_json::Value;
 
 fn main(){
 	let mut core = Core::new().unwrap();
-	 let client = ::hyper::Client::configure()
-        .connector(::hyper_tls::HttpsConnector::new(4, &core.handle()).unwrap())
+	 let client = hyper::Client::configure()
+        .connector(hyper_tls::HttpsConnector::new(4, &core.handle()).unwrap())
         .build(&core.handle());
 
 	let uri = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=GE&interval=1min&apikey=KPMZYNOVSB3KWEIJ".parse().unwrap();
@@ -36,10 +36,10 @@ pub struct FinanceData {
 
 pub fn fetch(api_key : String) -> FinanceData {
 	return FinanceData {
-		current : 1,
-		low : 1,
-		high : 1,
-		open : 1
+		current : 1.0,
+		low : 1.0,
+		high : 1.0,
+		open : 1.0
 	}
 }
 
