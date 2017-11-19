@@ -17,6 +17,10 @@ serde = "1.0"
 serde_derive = "1.0"
 sentiment = "0.1.1"
 chrono = "0.4"
+rusoto_core = "0.29.0"
+rusoto_dynamodb = "0.29.0"
+rusoto_credential = "0.9.0"
+
 [workspace]
 
 # Binary to build
