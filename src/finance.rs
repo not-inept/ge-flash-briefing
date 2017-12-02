@@ -14,8 +14,8 @@ pub struct FinanceData {
 	open : f64,
 	close : f64,
 	current : f64,
-	24hr_low : f64,
-	24hr_high : f64
+	hr_low : f64,
+	hr_high : f64
 }
 
 // Fetch financial data in the form of findata struct for storing
@@ -24,10 +24,11 @@ pub fn fetch(api_key : String) -> FinanceData {
 		open : 1.0,
 		close : 1.0,
 		current : 1.0,
-		24hr_low : 1.0,
-		24hr_high : 1.0		
+		hr_low : 1.0,
+		hr_high : 1.0		
 	}
 }
+
 
 fn main(){
 	let mut core = Core::new().unwrap();
@@ -47,13 +48,66 @@ fn main(){
 				)
 			}).unwrap();
 			
+			//time interval wanted
 			let series = "Time Series (1min)";
+			
+			//time of last refreshed
 			let mut time = serde_json::to_string(&v["Meta Data"]["3. Last Refreshed"]).unwrap();
 			time.remove(0);
 			time.pop();
 			println!("{}", time);
 			
-			println!("{}", v[series][time]);
+			//open of last refreshed
+			let mut open= serde_json::to_string(&v[series][&time]["1. open"]).unwrap();
+			open.remove(0);
+			open.pop();
+			println!("{}", open);
+			let openfloat: f64 = open.parse().unwrap();
+			println!("{}", openfloat);
+			
+			//high of last refreshed
+			let mut high = serde_json::to_string(&v[series][&time]["2. high"]).unwrap();
+			high.remove(0);
+			high.pop();
+			println!("{}", high);
+			let highfloat: f64 = high.parse().unwrap();
+			println!("{}", highfloat);
+			
+			//low of last refreshed
+			let mut low = serde_json::to_string(&v[series][&time]["3. low"]).unwrap();
+			low.remove(0);
+			low.pop();
+			println!("{}", low);
+			let lowfloat: f64 = low.parse().unwrap();
+			println!("{}", openfloat);
+			
+			//close of last refreshed
+			let mut close = serde_json::to_string(&v[series][&time]["4. close"]).unwrap();
+			close.remove(0);
+			close.pop();
+			println!("{}", close);
+			let closefloat: f64 = close.parse().unwrap();
+			println!("{}", closefloat);
+			
+			//volume of last refreshed
+			let mut volume = serde_json::to_string(&v[series][&time]["5. volume"]).unwrap();
+			volume.remove(0);
+			volume.pop();
+			println!("{}", volume);
+			let volumefloat: f64 = volume.parse().unwrap();
+			println!("{}", volumefloat);
+			
+			//print checks
+			//println!("{}", v[series][&time]);
+			//println!("{}", v[series][&time]["1. open"]);
+			//println!("{}", v[series][&time]["2. high"]);
+			//println!("{}", v[series][&time]["3. low"]);
+			//println!("{}", v[series][&time]["4. close"]);
+			//println!("{}", v[series][&time]["5. volume"]);
+			
+			
+			
+			
 			Ok(())
 		})
 	
