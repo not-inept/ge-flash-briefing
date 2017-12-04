@@ -6,7 +6,6 @@ authors = ["not-inept <mason@notinept.me>"]
 [dependencies]
 rocket = "0.3.3"
 rocket_codegen = "0.3.3"
-diesel = "*"
 serde_json = "*"
 scraper = "*"
 config = "*"
