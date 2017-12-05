@@ -45,9 +45,17 @@ struct AlexaItem {
     redirectionUrl: String,
 }
 
+use rocket::response::NamedFile;
+use std::path::{Path, PathBuf};
+use std::io;
 #[get("/")]
-fn index() -> &'static str {
-    "Webpage Under Construction!"
+fn index() -> io::Result<NamedFile> {
+    NamedFile::open("webui/build/index.html")
+}
+
+#[get("/<file..>")]
+fn files(file: PathBuf) -> Option<NamedFile> {
+    NamedFile::open(Path::new("webui/build/").join(file)).ok()
 }
 
 fn get_feed() -> Result<Value, Error> {
@@ -151,13 +159,9 @@ fn build_feed(format: FeedFormat) -> String {
     }
 }
 
-#[get("/feed/<file>")]
-fn serve_feed(file: String) -> content::Json<String> {
-    if file == String::from("alexa.json") {
-        return content::Json(build_feed(FeedFormat::Alexa));
-    } else {
-        return content::Json(String::from("{ 'response': 'Invalid requst.' }"));
-    }
+#[get("/feed/alexa.json")]
+fn serve_feed_alexa() -> content::Json<String> {
+    return content::Json(build_feed(FeedFormat::Alexa));
 }
 
 #[get("/finance")]
@@ -196,6 +200,6 @@ fn main() {
     // analyzer::analyze();
 
     rocket::ignite()
-        .mount("/", routes![index, serve_feed, serve_finance])
+        .mount("/", routes![serve_feed_alexa, serve_finance, files, index])
         .launch();
 }
