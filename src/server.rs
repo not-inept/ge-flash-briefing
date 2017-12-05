@@ -160,10 +160,8 @@ fn serve_feed(file: String) -> content::Json<String> {
     }
 }
 
-fn main() {
-    // println!("{}", build_feed(FeedFormat::Alexa));
-    // event::fetch();
-
+#[get("/finance")]
+fn serve_finance() -> content::Json<String> {
     let mut settings = config::Config::default();
     settings
         .merge(File::with_name("conf/sources.toml"))
@@ -174,12 +172,30 @@ fn main() {
         .get("api_key")
         .unwrap()
         .clone();
+    let fin = finance::fetch(alpha_key);
+    return content::Json(serde_json::to_string(&fin).unwrap());
+}
 
-    finance::fetch(alpha_key);
+fn main() {
+    // println!("{}", build_feed(FeedFormat::Alexa));
+    // event::fetch();
+
+    // let mut settings = config::Config::default();
+    // settings
+    //     .merge(File::with_name("conf/sources.toml"))
+    //     .unwrap();
+    // let alpha_key = settings
+    //     .get::<HashMap<String, String>>("alpha")
+    //     .unwrap()
+    //     .get("api_key")
+    //     .unwrap()
+    //     .clone();
+
+    // finance::fetch(alpha_key);
 
     // analyzer::analyze();
 
     rocket::ignite()
-        .mount("/", routes![index, serve_feed])
+        .mount("/", routes![index, serve_feed, serve_finance])
         .launch();
 }

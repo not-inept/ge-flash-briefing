@@ -10,6 +10,7 @@ use tokio_core::reactor::Core;
 use serde_json::Value;
 
 // A struct for holding financial data-- makes everything easier to work with
+#[derive(Debug, Clone, Serialize)]
 pub struct FinanceData {
     time: String,
     open: f64,
@@ -33,8 +34,8 @@ impl Default for FinanceData {
     }
 }
 // Fetch financial data in the form of findata struct for storing
-pub fn fetch(api_key: String) -> FinanceData {
-    // Build client for HTTPS Requests
+pub fn fetch(api_key: String) -> Vec<FinanceData> {
+    // Build client for HTTPS b
     let mut core = Core::new().unwrap();
     let client_config: hyper::client::Config<_, _> = ::hyper::Client::configure().connector(
         hyper_tls::HttpsConnector::new(4, &core.handle()).unwrap(),
@@ -43,9 +44,9 @@ pub fn fetch(api_key: String) -> FinanceData {
 
     // The endpoint for our API request to alpha
     let uri = format!("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=GE&interval=60min&apikey={}", api_key).parse().unwrap();
-    let mut finResult = FinanceData { ..Default::default() };
-
+    let mut fin_results : Vec<FinanceData> = Vec::new();
     // Now let's make the request!
+    println!("Defining work.");
     let work = client.get(uri).and_then(|res| {
         println!("Response: {}", res.status());
         res.body().concat2().and_then(move |body| {
@@ -56,74 +57,32 @@ pub fn fetch(api_key: String) -> FinanceData {
             // time interval wanted
             let series = "Time Series (60min)";
 
-            // get the time of last k
-            let mut time = serde_json::to_string(&v["Meta Data"]["3. Last Refreshed"]).unwrap();
-            time.remove(0);
-            time.pop();
-            println!("{}", time);
-            finResult.time = time.clone();
+            // return all results
+            let res =  v[series].as_object().unwrap();
+            // Break down API request data into items representing fin data for a period
+            for (key, val) in res {
+                let mut fin_result = FinanceData { ..Default::default() };
+                fin_result.time = key.clone();
 
-            //open of last refreshed
-            let mut open = serde_json::to_string(&v[series][&time]["1. open"]).unwrap();
-            open.remove(0);
-            open.pop();
-            println!("{}", open);
-            let openfloat: f64 = open.parse().unwrap();
-            println!("{}", openfloat);
-            finResult.open = openfloat;
-
-            //high of last refreshed
-            let mut high = serde_json::to_string(&v[series][&time]["2. high"]).unwrap();
-            high.remove(0);
-            high.pop();
-            println!("{}", high);
-            let highfloat: f64 = high.parse().unwrap();
-            println!("{}", highfloat);
-            finResult.hr_high = highfloat;
-
-            //low of last refreshed
-            let mut low = serde_json::to_string(&v[series][&time]["3. low"]).unwrap();
-            low.remove(0);
-            low.pop();
-            println!("{}", low);
-            let lowfloat: f64 = low.parse().unwrap();
-            println!("{}", openfloat);
-            finResult.hr_low = lowfloat;
-
-            //close of last refreshed
-            let mut close = serde_json::to_string(&v[series][&time]["4. close"]).unwrap();
-            close.remove(0);
-            close.pop();
-            println!("{}", close);
-            let closefloat: f64 = close.parse().unwrap();
-            println!("{}", closefloat);
-            finResult.close = closefloat;
-
-            //volume of last refreshed
-            let mut volume = serde_json::to_string(&v[series][&time]["5. volume"]).unwrap();
-            volume.remove(0);
-            volume.pop();
-            println!("{}", volume);
-            let volumefloat: f64 = volume.parse().unwrap();
-            println!("{}", volumefloat);
-            finResult.hr_volume = volumefloat;
-            //print checks
-            //println!("{}", v[series][&time]);
-            //println!("{}", v[series][&time]["1. open"]);
-            //println!("{}", v[series][&time]["2. high"]);
-            //println!("{}", v[series][&time]["3. low"]);
-            //println!("{}", v[series][&time]["4. close"]);
-            //println!("{}", v[series][&time]["5. volume"]);
-
-
-
-
-            Ok(finResult)
+                // Populate the findata struct with the appropriate info
+                fin_result.open = val["1. open"].as_str().unwrap().parse().unwrap();
+                fin_result.hr_high = val["2. high"].as_str().unwrap().parse().unwrap();
+                fin_result.hr_low = val["3. low"].as_str().unwrap().parse().unwrap();
+                fin_result.close = val["4. close"].as_str().unwrap().parse().unwrap();
+                fin_result.hr_volume = val["5. volume"].as_str().unwrap().parse().unwrap();
+                
+                // Put the findata struct on the stack
+                fin_results.push(fin_result);
+            }
+            println!("Work completing.");
+            Ok(fin_results)
         })
     });
-
-
-    return core.run(work).unwrap();
+    println!("Running work.");
+    let c = core.run(work);
+    println!("Parsing result.");
+    println!("{:?}", c);
+    c.unwrap()
 }
 
 
