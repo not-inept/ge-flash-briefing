@@ -78,10 +78,7 @@ pub fn fetch(api_key: String) -> Vec<FinanceData> {
             Ok(fin_results)
         })
     });
-    println!("Running work.");
     let c = core.run(work);
-    println!("Parsing result.");
-    println!("{:?}", c);
     c.unwrap()
 }
 

@@ -6,6 +6,7 @@ import { ListGroup } from 'react-bootstrap';
 import { ListGroupItem } from 'react-bootstrap';
 import sampleStock from '../../assets/stock.png';
 import './Stock.css';
+import axios from 'axios';
 
 function getStockPrice() {
 	return { "stock" : 50 };
@@ -32,11 +33,29 @@ const listgroupInstance = (
 );
 
 class Stock extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      current_price: [0]
+    };
+  }
+  componentDidMount() {
+    axios.get(`feed/finance.json`)
+    .then(res => {
+			const current_price = [res.data.pop()];
+			this.setState({ current_price });
+
+    });
+  }
 	render() {
 		return (
 			<div>
-			  {pageHeaderInstance}
-			  <h2 className="stockPrice">Current stock: 18.26 USD</h2>
+				{pageHeaderInstance}
+				{this.state.current_price.map(cur =>
+						<h2 className="stockPrice">Current stock: {cur.close} USD</h2>
+				)}
+
 			  <br />
 			  <br />
 			  {imageResponsiveInstance}

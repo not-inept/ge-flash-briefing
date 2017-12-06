@@ -234,7 +234,7 @@ fn serve_feed_web() -> content::Json<String> {
     return content::Json(build_feed(FeedFormat::Web));
 }
 
-#[get("/finance")]
+#[get("/feed/finance.json")]
 fn serve_finance() -> content::Json<String> {
     let mut settings = config::Config::default();
     settings
