@@ -6,38 +6,7 @@ import { PageHeader } from 'react-bootstrap';
 import { ListGroup } from 'react-bootstrap';
 import { ListGroupItem } from 'react-bootstrap';
 import './Headlines.css';
-
-function getCurrentEvents() {
-  var events = [{
-    "title": "Title",
-    "summary": "Summary",
-    "articleMoods": [{
-      source: "Source name",
-      mood: 5
-    }],
-    date: "9:57PM"
-  }, {
-    "title": "Title",
-    "summary": "Summary",
-    "articleMoods": [{
-      source: "Source name",
-      mood: 5 
-    }],
-    date: "9:57PM"
-  }, {
-    "title": "Title",
-    "summary": "Summary",
-    "articleMoods": [{
-      source: "Source name",
-      mood: 5
-    }],
-    date: "9:57PM"
-  }];
-
-  return events;
-}
-
-var events = getCurrentEvents();
+import axios from 'axios';
 
 const gridInstance = (
   <Grid>
@@ -48,55 +17,47 @@ const gridInstance = (
   </Grid>
 );
 
-const pageHeaderInstance = (
-  <PageHeader>Headlines <small>from various news sources</small></PageHeader>
-);
 
-const listgroupInstance = (
-  <ListGroup>
 
-    <ListGroupItem header="Heading 1">Lorem ipsum dolor sit amet, consectetur 
-    adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna 
-    aliqua. Ac odio tempor orci dapibus. Massa ultricies mi quis hendrerit dolor 
-    magna eget. Pulvinar etiam non quam lacus suspendisse faucibus interdum. 
-    Ac odio tempor orci dapibus ultrices in iaculis nunc.</ListGroupItem>
-
-    <ListGroupItem header="Heading 2">Lorem ipsum dolor sit amet, 
-    consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-    dolore magna aliqua. Ac odio tempor orci dapibus. Massa ultricies mi quis 
-    hendrerit dolor magna eget. Pulvinar etiam non quam lacus suspendisse 
-    faucibus interdum. Ac odio tempor orci dapibus ultrices in iaculis nunc.</ListGroupItem>
-    
-    <ListGroupItem header="Heading 3">Lorem ipsum dolor sit 
-    amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
-    labore et dolore magna aliqua. Ac odio tempor orci dapibus. Massa ultricies 
-    mi quis hendrerit dolor magna eget. Pulvinar etiam non quam lacus 
-    suspendisse faucibus interdum. Ac odio tempor orci dapibus ultrices in 
-    iaculis nunc.</ListGroupItem>
-
-    <ListGroupItem header="Heading 4">Lorem ipsum dolor sit 
-    amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
-    labore et dolore magna aliqua. Ac odio tempor orci dapibus. Massa ultricies 
-    mi quis hendrerit dolor magna eget. Pulvinar etiam non quam lacus 
-    suspendisse faucibus interdum. Ac odio tempor orci dapibus ultrices in 
-    iaculis nunc.</ListGroupItem>
-
-    <ListGroupItem header="Heading 5">Lorem ipsum dolor sit 
-    amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
-    labore et dolore magna aliqua. Ac odio tempor orci dapibus. Massa ultricies 
-    mi quis hendrerit dolor magna eget. Pulvinar etiam non quam lacus 
-    suspendisse faucibus interdum. Ac odio tempor orci dapibus ultrices in 
-    iaculis nunc.</ListGroupItem>
-
-  </ListGroup>
-);
 
 class Headlines extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      articles: [],
+      num_articles: [0]
+    };
+  }
+  componentDidMount() {
+    axios.get(`feed/web.json`)
+    .then(res => {
+      const articles = res.data;
+      this.setState({ articles });
+
+      var total = 0;
+      for (var a in articles) {
+        total += parseInt(articles[a].numArticles);
+      }
+      const num_articles = [total];
+      console.log(num_articles)
+      this.setState({ num_articles });
+    });
+  }
   render() {
     return ( 
       <div>
-        {pageHeaderInstance}
-        {listgroupInstance}
+        {this.state.num_articles.map(num =>
+          <PageHeader><small>GE News from over</small> {num} <small>articles</small></PageHeader>
+        )}
+
+        <ListGroup>
+          {this.state.articles.map(article =>
+             <ListGroupItem header={article.titleText}>
+              {article.mainText}
+             </ListGroupItem>
+          )}
+        </ListGroup>
       </div>
     );
   }
